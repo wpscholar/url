@@ -1,0 +1,18 @@
+{
+    "name": "wpscholar/url",
+    "description": "A PHP class for parsing and manipulating URLs.",
+    "type": "library",
+    "license": "GPL-2.0+",
+    "authors": [
+        {
+            "name": "Micah Wood",
+            "email": "micah@wpscholar.com",
+            "homepage": "http://wpscholar.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "wpscholar\\": ""
+        }
+    }
+}
