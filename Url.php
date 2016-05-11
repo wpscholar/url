@@ -59,7 +59,6 @@ class Url {
 			$url = self::getCurrentUrl();
 		}
 		$this->parseUrl( $url );
-
 	}
 
 	/**
@@ -111,11 +110,11 @@ class Url {
 	 * @return $this
 	 */
 	public function parseUrl( $url ) {
-		$this->url      = $url;
-		$this->scheme   = parse_url( $url, PHP_URL_SCHEME );
-		$this->host     = parse_url( $url, PHP_URL_HOST );
-		$this->path     = parse_url( $url, PHP_URL_PATH );
-		$this->query    = parse_url( $url, PHP_URL_QUERY );
+		$this->url = $url;
+		$this->scheme = parse_url( $url, PHP_URL_SCHEME );
+		$this->host = parse_url( $url, PHP_URL_HOST );
+		$this->path = parse_url( $url, PHP_URL_PATH );
+		$this->query = parse_url( $url, PHP_URL_QUERY );
 		$this->fragment = parse_url( $url, PHP_URL_FRAGMENT );
 
 		return $this;
@@ -128,6 +127,19 @@ class Url {
 	 */
 	public function getSegments() {
 		return array_filter( explode( '/', trim( $this->path, '/' ) ) );
+	}
+
+	/**
+	 * Get a specific path segment from a URL
+	 *
+	 * @param int $key
+	 *
+	 * @return string|null
+	 */
+	public function getSegment( $key = 0 ) {
+		$segments = $this->getSegments();
+
+		return array_key_exists( $key, $segments ) ? $segments[ $key ] : null;
 	}
 
 	/**
@@ -180,10 +192,10 @@ class Url {
 	 * @return string
 	 */
 	public function addQueryVar( $key, $value ) {
-		$query_vars         = $this->getQueryVars();
+		$query_vars = $this->getQueryVars();
 		$query_vars[ $key ] = $value;
-		$this->query        = http_build_query( $query_vars );
-		$this->url          = self::buildUrl( $this->toArray() );
+		$this->query = http_build_query( $query_vars );
+		$this->url = self::buildUrl( $this->toArray() );
 
 		return $this->url;
 	}
@@ -199,7 +211,7 @@ class Url {
 		$query_vars = $this->getQueryVars();
 		unset( $query_vars[ $key ] );
 		$this->query = http_build_query( $query_vars );
-		$this->url   = self::buildUrl( $this->toArray() );
+		$this->url = self::buildUrl( $this->toArray() );
 
 		return $this->url;
 	}
@@ -239,7 +251,7 @@ class Url {
 	 */
 	public function addFragment( $value ) {
 		$this->fragment = $value;
-		$this->url      = self::buildUrl( $this->toArray() );
+		$this->url = self::buildUrl( $this->toArray() );
 
 		return $this->url;
 	}
