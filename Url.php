@@ -68,7 +68,7 @@ class Url {
 	 */
 	public static function getCurrentUrl() {
 
-		$is_ssl = (boolean) getenv( 'HTTPS' ) || 443 == getenv( 'SERVER_PORT' ) || 'https' === getenv( 'HTTP_X_FORWARDED_PROTO' );
+		$is_ssl = (boolean) getenv( 'HTTPS' ) || '443' === getenv( 'SERVER_PORT' ) || 'https' === getenv( 'HTTP_X_FORWARDED_PROTO' );
 		$scheme = $is_ssl ? 'https' : 'http';
 
 		return $scheme . '://' . getenv( 'HTTP_HOST' ) . getenv( 'REQUEST_URI' );
@@ -153,7 +153,7 @@ class Url {
 	public static function buildPath( array $segments, $trailing_slash = false ) {
 		$path = '';
 		if ( ! empty( $segments ) ) {
-			$path .= '/' . join( '/', $segments );
+			$path .= '/' . implode( '/', $segments );
 		}
 		if ( $trailing_slash ) {
 			$path .= '/';
