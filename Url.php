@@ -1,5 +1,7 @@
 <?php
 
+namespace wpscholar\Url;
+
 /**
  * Class Url
  *
