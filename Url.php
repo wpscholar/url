@@ -86,7 +86,7 @@ class Url {
 	 * @return string
 	 */
 	public static function getCurrentUrl() {
-		return self::getCurrentScheme() . '://' . getenv( 'HTTP_HOST' ) . getenv( 'REQUEST_URI' );
+		return self::getCurrentScheme() . '://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI'];
 	}
 
 	/**
@@ -95,7 +95,7 @@ class Url {
 	 * @return string
 	 */
 	public static function getCurrentScheme() {
-		$is_ssl = (boolean) getenv( 'HTTPS' ) || '443' === getenv( 'SERVER_PORT' ) || 'https' === getenv( 'HTTP_X_FORWARDED_PROTO' );
+		$is_ssl = (boolean) $_SERVER['HTTPS'] || '443' === $_SERVER['SERVER_PORT'] || 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'];
 		$scheme = $is_ssl ? 'https' : 'http';
 
 		return $scheme;
