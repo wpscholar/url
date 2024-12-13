@@ -95,7 +95,7 @@ class Url {
 	 * @return string
 	 */
 	public static function getCurrentScheme() {
-		$is_ssl = (boolean) $_SERVER['HTTPS'] || '443' === $_SERVER['SERVER_PORT'] || 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'];
+		$is_ssl = (boolean) $_SERVER['HTTPS'] || '443' === $_SERVER['SERVER_PORT'] || ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO']);
 		$scheme = $is_ssl ? 'https' : 'http';
 
 		return $scheme;
