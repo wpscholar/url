@@ -5,6 +5,9 @@ namespace wpscholar\Tests;
 use PHPUnit\Framework\TestCase;
 use wpscholar\Url;
 
+/**
+ * @covers \wpscholar\Url
+ */
 class UrlTest extends TestCase {
 
 	protected function setUp(): void {
@@ -19,6 +22,10 @@ class UrlTest extends TestCase {
 		unset( $_SERVER['HTTP_HOST'], $_SERVER['REQUEST_URI'], $_SERVER['HTTPS'] );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::__construct
+	 * @covers \wpscholar\Url::parseUrl
+	 */
 	public function testUrlParsing() {
 		$url = new Url( 'https://user:pass@example.com:8080/path?param=value#section' );
 
@@ -38,6 +45,10 @@ class UrlTest extends TestCase {
 		$this->assertEquals( 'not-a-valid-url', $url->path );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::__get
+	 * @covers \wpscholar\Url::__set
+	 */
 	public function testMagicMethods() {
 		$url = new Url( 'https://example.com/path' );
 
@@ -46,24 +57,39 @@ class UrlTest extends TestCase {
 		$this->assertEquals( '', $url->user ); // Non-existent component
 		$this->assertEquals( '', $url->nonexistent ); // Non-existent property
 
-		// Test __toString
-		$this->assertEquals( 'https://example.com/path', (string) $url );
-
-		// Test property modification through magic methods
+		// Test __set
 		$url->scheme = 'http';
 		$this->assertEquals( 'http', $url->scheme );
+
+		// Test setting non-existent property (should be ignored)
+		$url->nonexistent = 'value';
+		$this->assertEquals( '', $url->nonexistent );
+
+		// Test setting empty values
+		$url->query = '';
+		$this->assertEquals( '', $url->query );
 		$this->assertEquals( 'http://example.com/path', (string) $url );
 
-		$url->query = 'test=value';
-		$this->assertEquals( 'test=value', $url->query );
-		$this->assertEquals( 'http://example.com/path?test=value', (string) $url );
+		// Test setting null values
+		$url->fragment = null;
+		$this->assertEquals( '', $url->fragment );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::__construct
+	 * @covers \wpscholar\Url::getCurrentUrl
+	 */
 	public function testEmptyUrlDefaultsToCurrentUrl() {
 		$url = new Url();
 		$this->assertEquals( 'https://example.com/test-path', $url->toString() );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::addQueryVar
+	 * @covers \wpscholar\Url::removeQueryVar
+	 * @covers \wpscholar\Url::getQueryVar
+	 * @covers \wpscholar\Url::getQueryVars
+	 */
 	public function testQueryParameterManipulation() {
 		$url = new Url( 'https://example.com/path?param=value&existing=test' );
 
@@ -91,6 +117,10 @@ class UrlTest extends TestCase {
 		$this->assertEmpty( $url->getQueryVars() );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::stripQueryString
+	 * @covers \wpscholar\Url::buildUrl
+	 */
 	public function testStaticHelpers() {
 		// Test stripping query string
 		$urlString = 'https://example.com/path?param=value#fragment';
@@ -122,6 +152,11 @@ class UrlTest extends TestCase {
 		$this->assertEquals( 'user:pass@', Url::buildUrl( $authParts ) );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::getSegments
+	 * @covers \wpscholar\Url::getSegment
+	 * @covers \wpscholar\Url::hasTrailingSlash
+	 */
 	public function testPathManipulation() {
 		$url = new Url( 'https://example.com/blog/2023/post-title/' );
 
@@ -147,6 +182,10 @@ class UrlTest extends TestCase {
 		$this->assertEmpty( $url3->getSegments() );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::toString
+	 * @covers \wpscholar\Url::toArray
+	 */
 	public function testUrlOutput() {
 		$urlString = 'https://example.com/path?param=value#fragment';
 		$url       = new Url( $urlString );
@@ -175,6 +214,9 @@ class UrlTest extends TestCase {
 		$this->assertEmpty( $parts['fragment'] );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::getCurrentScheme
+	 */
 	public function testGetCurrentScheme() {
 		// Test HTTPS via server variable
 		$_SERVER['HTTPS'] = 'on';
@@ -199,6 +241,9 @@ class UrlTest extends TestCase {
 		$this->assertEquals( 'http', Url::getCurrentScheme() );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::buildPath
+	 */
 	public function testBuildPath() {
 		// Test with segments
 		$segments = array( 'blog', '2023', 'post-title' );
@@ -212,6 +257,9 @@ class UrlTest extends TestCase {
 		$this->assertEquals( '/', Url::buildPath( array(), true ) );
 	}
 
+	/**
+	 * @covers \wpscholar\Url::getCurrentUrl
+	 */
 	public function testGetCurrentUrl() {
 		$expected = 'https://example.com/test-path';
 		$this->assertEquals( $expected, Url::getCurrentUrl() );
@@ -220,5 +268,104 @@ class UrlTest extends TestCase {
 		unset( $_SERVER['HTTPS'] );
 		$expected = 'http://example.com/test-path';
 		$this->assertEquals( $expected, Url::getCurrentUrl() );
+	}
+
+	/**
+	 * @covers \wpscholar\Url::getSegment
+	 */
+	public function testGetSegment() {
+		$url = new Url( 'https://example.com/blog/2023/post-title' );
+
+		// Test valid segments
+		$this->assertEquals( 'blog', $url->getSegment( 0 ) );
+		$this->assertEquals( '2023', $url->getSegment( 1 ) );
+		$this->assertEquals( 'post-title', $url->getSegment( 2 ) );
+
+		// Test non-existent segments
+		$this->assertNull( $url->getSegment( -1 ) ); // Negative index
+		$this->assertNull( $url->getSegment( 5 ) );  // Out of bounds
+
+		// Test with empty path
+		$url = new Url( 'https://example.com' );
+		$this->assertNull( $url->getSegment( 0 ) );
+	}
+
+	/**
+	 * @covers \wpscholar\Url::__toString
+	 */
+	public function testToString() {
+		// Test full URL
+		$url = new Url( 'https://user:pass@example.com:8080/path?param=value#fragment' );
+		$this->assertEquals(
+			'https://user:pass@example.com:8080/path?param=value#fragment',
+			(string) $url
+		);
+
+		// Test minimal URL
+		$url = new Url( 'http://example.com' );
+		$this->assertEquals( 'http://example.com', (string) $url );
+
+		// Test URL with empty components
+		$url           = new Url( 'http://example.com' );
+		$url->query    = '';
+		$url->fragment = '';
+		$this->assertEquals( 'http://example.com', (string) $url );
+	}
+
+	/**
+	 * @covers \wpscholar\Url::parseUrl
+	 */
+	public function testParseUrlEdgeCases() {
+		// Test with malformed URL
+		$url = new Url( 'not-a-url' );
+		$this->assertEquals( 'not-a-url', $url->_url );
+		$this->assertEquals( '', $url->scheme );
+		$this->assertEquals( '', $url->host );
+		$this->assertEquals( 'not-a-url', $url->path );
+
+		// Test with empty URL
+		$url = new Url( '' );
+		$this->assertEquals( '', $url->_url );
+
+		// Test with only query string
+		$url = new Url( '?test=1' );
+		$this->assertEquals( '', $url->scheme );
+		$this->assertEquals( '', $url->host );
+		$this->assertEquals( '', $url->path );
+		$this->assertEquals( 'test=1', $url->query );
+	}
+
+	/**
+	 * @covers \wpscholar\Url::getCurrentUrl
+	 */
+	public function testGetCurrentUrlEdgeCases() {
+		// Test with minimal server variables
+		unset( $_SERVER['HTTPS'] );
+		unset( $_SERVER['SERVER_PORT'] );
+		unset( $_SERVER['HTTP_X_FORWARDED_PROTO'] );
+		$_SERVER['HTTP_HOST']   = 'example.com';
+		$_SERVER['REQUEST_URI'] = '/test';
+
+		$this->assertEquals( 'http://example.com/test', Url::getCurrentUrl() );
+
+		// Test with empty REQUEST_URI
+		$_SERVER['REQUEST_URI'] = '';
+		$this->assertEquals( 'http://example.com', Url::getCurrentUrl() );
+	}
+
+	/**
+	 * @covers \wpscholar\Url::getSegment
+	 */
+	public function testGetSegmentArrayAccess() {
+		$url      = new Url( 'https://example.com/blog/2023/post-title' );
+		$segments = $url->getSegments();
+
+		// Test array access
+		$this->assertEquals( 'blog', $segments[0] );
+		$this->assertEquals( '2023', $segments[1] );
+		$this->assertEquals( 'post-title', $segments[2] );
+
+		// Test array count
+		$this->assertCount( 3, $segments );
 	}
 }

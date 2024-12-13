@@ -2,7 +2,8 @@
 <phpunit bootstrap="vendor/autoload.php"
          colors="true"
          verbose="true"
-         stopOnFailure="false">
+         stopOnFailure="false"
+         forceCoversAnnotation="true">
     <testsuites>
         <testsuite name="URL Handler Test Suite">
             <directory>tests</directory>
@@ -20,6 +21,6 @@
     <logging>
         <log type="coverage-clover" target="coverage.xml"/>
         <log type="coverage-html" target="coverage" lowUpperBound="50" highLowerBound="90"/>
-        <log type="coverage-text" target="php://stdout" showUncoveredFiles="false" showOnlySummary="true"/>
+        <log type="coverage-text" target="php://stdout" showUncoveredFiles="true" showOnlySummary="false"/>
     </logging>
 </phpunit> 
