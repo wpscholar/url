@@ -4,9 +4,19 @@ on:
   push:
     branches:
       - main
+    paths:
+      - '**.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpunit.xml'
   pull_request:
     branches:
       - main
+    paths:
+      - '**.php'
+      - 'composer.json'
+      - 'composer.lock'
+      - 'phpunit.xml'
 
 jobs:
   test:
