@@ -30,6 +30,33 @@ class UrlTest extends TestCase {
 		$this->assertEquals( '/path', $url->path );
 		$this->assertEquals( 'param=value', $url->query );
 		$this->assertEquals( 'section', $url->fragment );
+
+		// Test parsing invalid URL
+		$url = new Url( 'not-a-valid-url' );
+		$this->assertEquals( '', $url->scheme );
+		$this->assertEquals( '', $url->host );
+		$this->assertEquals( 'not-a-valid-url', $url->path );
+	}
+
+	public function testMagicMethods() {
+		$url = new Url( 'https://example.com/path' );
+
+		// Test __get
+		$this->assertEquals( 'https', $url->scheme );
+		$this->assertEquals( '', $url->user ); // Non-existent component
+		$this->assertEquals( '', $url->nonexistent ); // Non-existent property
+
+		// Test __toString
+		$this->assertEquals( 'https://example.com/path', (string) $url );
+
+		// Test property modification through magic methods
+		$url->scheme = 'http';
+		$this->assertEquals( 'http', $url->scheme );
+		$this->assertEquals( 'http://example.com/path', (string) $url );
+
+		$url->query = 'test=value';
+		$this->assertEquals( 'test=value', $url->query );
+		$this->assertEquals( 'http://example.com/path?test=value', (string) $url );
 	}
 
 	public function testEmptyUrlDefaultsToCurrentUrl() {
@@ -58,6 +85,10 @@ class UrlTest extends TestCase {
 		// Test array query parameters
 		$url->addQueryVar( 'array_param', array( 'one', 'two' ) );
 		$this->assertEquals( array( 'one', 'two' ), $url->getQueryVar( 'array_param' ) );
+
+		// Test empty query string
+		$url->query = '';
+		$this->assertEmpty( $url->getQueryVars() );
 	}
 
 	public function testStaticHelpers() {
@@ -82,6 +113,13 @@ class UrlTest extends TestCase {
 		// Test building URL with minimal parts
 		$minimalParts = array( 'host' => 'example.com' );
 		$this->assertEquals( 'example.com', Url::buildUrl( $minimalParts ) );
+
+		// Test building URL with only authentication
+		$authParts = array(
+			'user' => 'user',
+			'pass' => 'pass',
+		);
+		$this->assertEquals( 'user:pass@', Url::buildUrl( $authParts ) );
 	}
 
 	public function testPathManipulation() {
@@ -103,6 +141,10 @@ class UrlTest extends TestCase {
 		// Test URL without trailing slash
 		$url2 = new Url( 'https://example.com/blog/2023/post-title' );
 		$this->assertFalse( $url2->hasTrailingSlash() );
+
+		// Test empty path
+		$url3 = new Url( 'https://example.com' );
+		$this->assertEmpty( $url3->getSegments() );
 	}
 
 	public function testUrlOutput() {
@@ -123,6 +165,14 @@ class UrlTest extends TestCase {
 		$this->assertEquals( '/path', $urlParts['path'] );
 		$this->assertEquals( 'param=value', $urlParts['query'] );
 		$this->assertEquals( 'fragment', $urlParts['fragment'] );
+
+		// Test empty components
+		$url   = new Url( 'http://example.com' );
+		$parts = $url->toArray();
+		$this->assertArrayHasKey( 'query', $parts );
+		$this->assertEmpty( $parts['query'] );
+		$this->assertArrayHasKey( 'fragment', $parts );
+		$this->assertEmpty( $parts['fragment'] );
 	}
 
 	public function testGetCurrentScheme() {
@@ -160,5 +210,15 @@ class UrlTest extends TestCase {
 		// Test empty segments
 		$this->assertEquals( '', Url::buildPath( array() ) );
 		$this->assertEquals( '/', Url::buildPath( array(), true ) );
+	}
+
+	public function testGetCurrentUrl() {
+		$expected = 'https://example.com/test-path';
+		$this->assertEquals( $expected, Url::getCurrentUrl() );
+
+		// Test with different scheme
+		unset( $_SERVER['HTTPS'] );
+		$expected = 'http://example.com/test-path';
+		$this->assertEquals( $expected, Url::getCurrentUrl() );
 	}
 }
