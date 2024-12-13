@@ -95,10 +95,29 @@ class Url {
 	 * @return string
 	 */
 	public static function getCurrentScheme() {
-		$is_ssl = (boolean) $_SERVER['HTTPS'] || '443' === $_SERVER['SERVER_PORT'] || ( isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO']);
-		$scheme = $is_ssl ? 'https' : 'http';
 
-		return $scheme;
+		// Check HTTPS server variable
+		if ( isset( $_SERVER['HTTPS'] ) ) {
+			if ( 'on' === strtolower( $_SERVER['HTTPS'] ) ) {
+				return 'https';
+			}
+
+			if ( '1' === (string) $_SERVER['HTTPS'] ) {
+				return 'https';
+			}
+		}
+
+		// Check port
+		if ( isset( $_SERVER['SERVER_PORT'] ) && '443' === (string) $_SERVER['SERVER_PORT'] ) {
+			return 'https';
+		}
+
+		// Check forwarded protocol
+		if ( isset( $_SERVER['HTTP_X_FORWARDED_PROTO'] ) && 'https' === $_SERVER['HTTP_X_FORWARDED_PROTO'] ) {
+			return 'https';
+		}
+
+		return 'http';
 	}
 
 	/**
@@ -386,5 +405,4 @@ class Url {
 
 		return $this;
 	}
-
 }
