@@ -51,7 +51,7 @@ The test suite covers all major functionality including:
 - Path manipulation
 - URL output methods
 
-The test suite is automatically run via GitHub Actions whenever code is pushed to the `main` branch or when a pull request is created. The tests are run against multiple PHP versions (7.4, 8.0, 8.1, and 8.2) to ensure broad compatibility.
+The test suite is automatically run via GitHub Actions whenever code is pushed to the `main` branch or when a pull request is created. The tests are run against multiple PHP versions (7.4, 8.0, 8.1, 8.2, and 8.3) to ensure broad compatibility.
 
 ## Basic Usage
 
