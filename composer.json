@@ -14,5 +14,16 @@
         "psr-4": {
             "wpscholar\\": ""
         }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "wpscholar\\Tests\\": "tests/"
+        }
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.0"
+    },
+    "scripts": {
+        "test": "phpunit"
     }
 }

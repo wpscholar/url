@@ -30,6 +30,27 @@ Install via Composer:
 composer require wpscholar/url
 ```
 
+## Testing
+
+This library includes a comprehensive test suite built with PHPUnit. To run the tests:
+
+1. Install development dependencies:
+```bash
+composer install
+```
+
+2. Run the test suite:
+```bash
+composer test
+```
+
+The test suite covers all major functionality including:
+- URL parsing
+- Query parameter manipulation
+- Static helper methods
+- Path manipulation
+- URL output methods
+
 ## Basic Usage
 
 ```php
