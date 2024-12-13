@@ -94,3 +94,22 @@ $year = $url->getSegment(1);     // Returns: '2023'
 $section = $url->getSegment(0);  // Returns: 'blog'
 $slug = $url->getSegment(2);     // Returns: 'post-title'
 ```
+
+## URL Output
+
+```php
+// Get full URL as string - multiple methods:
+$url = new Url('https://example.com/path?param=value');
+
+// Method 1: Using toString()
+echo $url->toString();  // 'https://example.com/path?param=value'
+
+// Method 2: Cast to string directly
+echo (string) $url;     // 'https://example.com/path?param=value'
+
+// Method 3: Using magic __toString()
+echo $url;              // 'https://example.com/path?param=value'
+
+// Get URL parts as array
+$urlParts = $url->toArray();  // Returns array of URL components
+```
