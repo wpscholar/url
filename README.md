@@ -1,5 +1,10 @@
 # URL Handler
 
+[![Tests](https://github.com/wpscholar/url/actions/workflows/tests.yml/badge.svg)](https://github.com/wpscholar/url/actions/workflows/tests.yml)
+[![Latest Stable Version](https://poser.pugx.org/wpscholar/url/v/stable)](https://packagist.org/packages/wpscholar/url)
+[![PHP Version Support](https://img.shields.io/badge/php-%3E%3D7.2-blue)](https://packagist.org/packages/wpscholar/url)
+[![License](https://poser.pugx.org/wpscholar/url/license)](https://packagist.org/packages/wpscholar/url)
+
 A PHP library for parsing, manipulating, and building URLs.
 
 ## Description
