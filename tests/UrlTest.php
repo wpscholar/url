@@ -461,10 +461,46 @@ class UrlTest extends TestCase {
 		$this->assertEquals( '/newpath', $url->path );
 		$this->assertEquals( 'https://example.org/newpath', (string) $url );
 
-		// Test setting URL to null
-		$url->url = null;
+		// Test setting URL to empty string
+		$url->url = '';
 		$this->assertEquals( '', $url->scheme );
 		$this->assertEquals( '', $url->host );
 		$this->assertEquals( '', $url->path );
+	}
+
+	/**
+	 * @covers \wpscholar\Url::__set
+	 */
+	public function testSetEmptyValues() {
+		$url = new Url( 'https://example.com/path' );
+
+		// Test setting individual components to empty values
+		$url->scheme   = '';
+		$url->host     = '';
+		$url->path     = '';
+		$url->query    = '';
+		$url->fragment = '';
+
+		$this->assertEquals( '', $url->scheme );
+		$this->assertEquals( '', $url->host );
+		$this->assertEquals( '', $url->path );
+		$this->assertEquals( '', $url->query );
+		$this->assertEquals( '', $url->fragment );
+		$this->assertEquals( '', (string) $url );
+
+		// Test setting individual components to null (should be converted to empty string)
+		$url           = new Url( 'https://example.com/path?query=value#fragment' );
+		$url->scheme   = null;
+		$url->host     = null;
+		$url->path     = null;
+		$url->query    = null;
+		$url->fragment = null;
+
+		$this->assertEquals( '', $url->scheme );
+		$this->assertEquals( '', $url->host );
+		$this->assertEquals( '', $url->path );
+		$this->assertEquals( '', $url->query );
+		$this->assertEquals( '', $url->fragment );
+		$this->assertEquals( '', (string) $url );
 	}
 }

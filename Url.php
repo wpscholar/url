@@ -385,24 +385,20 @@ class Url {
 	/**
 	 * Magic method for setting properties.
 	 *
-	 * @param string $name  Property name to set.
-	 * @param string $value Property value to set.
+	 * @param string      $name  Property name to set.
+	 * @param string|null $value Property value to set.
 	 *
 	 * @return $this
 	 */
 	public function __set( $name, $value ) {
 		$property = "_{$name}";
 		if ( 'url' === $name ) {
-
 			// If setting URL, parse and set all the URL parts
-			$this->parseUrl( $value );
-
+			$this->parseUrl( (string) $value );
 		} elseif ( property_exists( $this, $property ) ) {
-
 			// If setting a URL part, build and set the full URL
 			$this->$property = (string) $value;
 			$this->_url      = self::buildUrl( $this->toArray() );
-
 		}
 
 		return $this;
