@@ -4,6 +4,7 @@
 [![Latest Stable Version](https://poser.pugx.org/wpscholar/url/v/stable)](https://packagist.org/packages/wpscholar/url)
 [![PHP Version Support](https://img.shields.io/badge/php-%3E%3D7.2-blue)](https://packagist.org/packages/wpscholar/url)
 [![License](https://poser.pugx.org/wpscholar/url/license)](https://packagist.org/packages/wpscholar/url)
+[![codecov](https://codecov.io/gh/wpscholar/url/branch/main/graph/badge.svg)](https://codecov.io/gh/wpscholar/url)
 
 A PHP library for parsing, manipulating, and building URLs.
 

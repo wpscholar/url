@@ -13,3 +13,7 @@ composer.lock
 
 # PHPUnit
 .phpunit.result.cache
+
+# Coverage
+/coverage/
+coverage.xml
