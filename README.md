@@ -79,3 +79,18 @@ $url = Url::buildUrl([
     'query' => 'param=value'
 ]);
 ```
+
+## Path Manipulation
+
+```php
+// Given URL: https://example.com/blog/2023/post-title
+
+// Get all path segments as array
+$segments = $url->getSegments();
+// Returns: ['blog', '2023', 'post-title']
+
+// Get specific segment by index (zero-based)
+$year = $url->getSegment(1);     // Returns: '2023'
+$section = $url->getSegment(0);  // Returns: 'blog'
+$slug = $url->getSegment(2);     // Returns: 'post-title'
+```
